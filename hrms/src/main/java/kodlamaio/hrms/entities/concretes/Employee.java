@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kodlamaio.hrms.entities.abstracts.Users;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name="employees")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employee extends Users{
+public class Employee extends User{
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

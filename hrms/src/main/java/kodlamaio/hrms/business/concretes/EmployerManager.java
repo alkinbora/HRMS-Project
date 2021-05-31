@@ -1,77 +1,120 @@
 package kodlamaio.hrms.business.concretes;
 
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlamaio.hrms.business.abstracts.EmployerService;
-import kodlamaio.hrms.core.abstracts.EmailSendService;
-import kodlamaio.hrms.core.utilities.DataResult;
-import kodlamaio.hrms.core.utilities.ErrorResult;
-import kodlamaio.hrms.core.utilities.Result;
-import kodlamaio.hrms.core.utilities.SuccessDataResult;
-import kodlamaio.hrms.core.utilities.SuccessResult;
+import kodlamaio.hrms.business.abstracts.UserService;
+import kodlamaio.hrms.business.abstracts.VerificationCodeService;
+import kodlamaio.hrms.core.utilities.results.DataResult;
+import kodlamaio.hrms.core.utilities.results.ErrorDataResult;
+import kodlamaio.hrms.core.utilities.results.ErrorResult;
+import kodlamaio.hrms.core.utilities.results.Result;
+import kodlamaio.hrms.core.utilities.results.SuccessDataResult;
+import kodlamaio.hrms.core.utilities.results.SuccessResult;
+import kodlamaio.hrms.core.utilities.validation.Injection;
 import kodlamaio.hrms.dataAccess.abstracts.EmployerDao;
+import kodlamaio.hrms.entities.concretes.EmailVerificationCode;
 import kodlamaio.hrms.entities.concretes.Employer;
+import kodlamaio.hrms.entities.concretes.User;
 
 @Service
 public class EmployerManager implements EmployerService{
 
-	private EmailSendService emailSendService;
-	private List<String> emails = new ArrayList<>();
-	private EmployerDao employerDao;
-	
 	@Autowired
-	public EmployerManager(EmployerDao employerDao, EmailSendService emailSendService) {
+	private EmployerDao employerDao;
+	private VerificationCodeService verificationCodeService;
+	private UserService userService;
+	
+	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService,
+			UserService userService) {
 		super();
 		this.employerDao = employerDao;
-		this.emailSendService=emailSendService;
-	}
-	
-	@Override
-	public Result login(String email, String password) {
-		Result result = new ErrorResult("Giriş başarısız.");
-		for (int i = 0; i < employerDao.findAll().size(); i++) {
-			if(employerDao.findAll().get(i).getEmail() == email && employerDao.findAll().get(i).getPassword() == password) {
-				result = new SuccessResult("Giriş başarılı.");
-			}
-		}
-		return result;
+		this.verificationCodeService = verificationCodeService;
+		this.userService = userService;
 	}
 
 	@Override
-	public Result register(Employer employer) {
-		Result result=new ErrorResult("Kayıt başarısız.");
-		if(emailIsItUsed(employer.getEmail())) {
-			emailSendService.emailSend(employer.getEmail());
-			employer.setConfirmation(false);  
-			this.employerDao.save(employer);
-			result = new SuccessResult("Kayıt başarılı");
+	public DataResult<Employer> add(Employer employer) {
+		Result engine = Injection.run(
+				companyNameChecker(employer),webSiteChecker(employer),passwordNullChecker(employer),
+				isRealEmployer(employer),isRealPhoneNumber(employer),isEmailAlreadyRegistered(employer));
+		
+		if(!engine.isSuccess()) {
+			return new ErrorDataResult(null,engine.getMessage());
 		}
-		return result;
+		
+		User savedUser = this.userService.add(employer);
+		this.verificationCodeService.generateCode(new EmailVerificationCode(),savedUser.getId());
+		return new SuccessDataResult<Employer>(this.employerDao.save(employer),
+				"İş Veren Hesabı Eklendi, Doğrulama Kodu Gönderildi ID:"+employer.getId());
 	}
 
-	private boolean emailIsItUsed(String email) {
-		boolean result = true;
-		if(getAllEmails().contains(email)) {
-			result = false;
+	private Result isEmailAlreadyRegistered(Employer employer) {
+		if(employerDao.findAllByEmail(employer.getEmail()).stream().count() != 0) {
+			 return new ErrorResult("Email zaten kayıtlı"); 
 		}
-		return result;
+	 	return new SuccessResult();
+	}
+
+	private Result isRealPhoneNumber(Employer employer) {
+		String patterns 
+	      = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" 
+	      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" 
+	      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
+		
+		Pattern pattern = Pattern.compile(patterns);
+		Matcher matcher = pattern.matcher(employer.getPhoneNumber());
+		if(!matcher.matches()) {
+			 return new ErrorResult("Geçersiz Telefon Numarası"); 
+		}
+		return new SuccessResult();
+	}
+
+	private Result isRealEmployer(Employer employer) {
+		 String regex = "^(.+)@(.+)$";
+	     Pattern pattern = Pattern.compile(regex);
+	     Matcher matcher = pattern.matcher(employer.getEmail());
+	     if(!matcher.matches()) {
+	    	 return new ErrorResult("Geçersiz Email Adresi");
+	     }
+	     else if(!employer.getEmail().contains(employer.getWebAdress())) {
+	    	 return new ErrorResult("Domain adresi girmek zorundasınız"); 
+	     }
+	 	return new SuccessResult();
+	     
+	}
+
+	private Result passwordNullChecker(Employer employer) {
+		if(employer.getPassword().isBlank() || employer.getPassword() == null) {
+			 return new ErrorResult("Şifre Bilgisi Doldurulmak zorundadır"); 
+		}
+		return new SuccessResult();
+	}
+
+	private Result webSiteChecker(Employer employer) {
+		if(employer.getWebAdress().isBlank() || employer.getWebAdress() == null) {
+			return new ErrorResult("WebSite Adresi Doldurulmak Zorundadır");
+		}
+		return new SuccessResult();
+	}
+
+	private Result companyNameChecker(Employer employer) {
+		if(employer.getCompanyName().isBlank() || employer.getCompanyName() == null) {
+			return new ErrorResult("Şirket Adı Doldurulmak Zorundadır");
+		}
+		return new SuccessResult();
 	}
 
 	@Override
 	public DataResult<List<Employer>> getAll() {
-		return new SuccessDataResult<List<Employer>>(this.employerDao.findAll(),"İşverenler listelendi.");
-	}
-
-	@Override
-	public List<String> getAllEmails() {
-		for (int i = 0; i < employerDao.findAll().size(); i++) {
-			emails.add(employerDao.findAll().get(i).getEmail());
-		}
-		return emails;
+		return new SuccessDataResult<List<Employer>>
+		(this.employerDao.findAll(),"Employer listelendi.");
 	}
 
 }

@@ -2,8 +2,9 @@ package kodlamaio.hrms.dataAccess.abstracts;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kodlamaio.hrms.entities.abstracts.Users;
+import kodlamaio.hrms.entities.concretes.User;
 
-public interface UserDao extends JpaRepository<Users, Integer>{
+
+public interface UserDao extends JpaRepository<User, Integer>{
 
 }

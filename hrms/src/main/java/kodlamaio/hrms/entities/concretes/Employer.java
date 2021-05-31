@@ -1,60 +1,50 @@
 package kodlamaio.hrms.entities.concretes;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kodlamaio.hrms.entities.abstracts.Users;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper=false) 
 @Data
 @Entity
-@Table(name="employers")
+@Table(name = "employers")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employer extends Users{
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","jobAdvertisement"})
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
-	private int id;
+public class Employer extends User{
 	
 	@Column(name="company_name")
 	private String companyName;
-	
-	@Column(name="web_adress")
-	private String webSite;
+	@Column(name="web_address")
+	private String webAdress;
 	
 	@Column(name="phone_number")
 	private String phoneNumber;
 	
-	@Column(name="is_activated")
-	private boolean confirmation;
+	@OneToMany(mappedBy = "employer")
+	private List<JobAdvertisement> jobAdvertisement;
 
 	public Employer() {
-		
-	}
-
-	public Employer(int id, String companyName, String webSite, String phoneNumber, boolean confirmation) {
 		super();
-		this.id = id;
+	}
+
+	public Employer(String companyName, String webAdress, String phoneNumber, List<JobAdvertisement> jobAdvertisement) {
+		super();
 		this.companyName = companyName;
-		this.webSite = webSite;
+		this.webAdress = webAdress;
 		this.phoneNumber = phoneNumber;
-		this.confirmation = confirmation;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+		this.jobAdvertisement = jobAdvertisement;
 	}
 
 	public String getCompanyName() {
@@ -65,12 +55,12 @@ public class Employer extends Users{
 		this.companyName = companyName;
 	}
 
-	public String getWebSite() {
-		return webSite;
+	public String getWebAdress() {
+		return webAdress;
 	}
 
-	public void setWebSite(String webSite) {
-		this.webSite = webSite;
+	public void setWebAdress(String webAdress) {
+		this.webAdress = webAdress;
 	}
 
 	public String getPhoneNumber() {
@@ -81,13 +71,11 @@ public class Employer extends Users{
 		this.phoneNumber = phoneNumber;
 	}
 
-	public boolean isConfirmation() {
-		return confirmation;
+	public List<JobAdvertisement> getJobAdvertisement() {
+		return jobAdvertisement;
 	}
 
-	public void setConfirmation(boolean confirmation) {
-		this.confirmation = confirmation;
+	public void setJobAdvertisement(List<JobAdvertisement> jobAdvertisement) {
+		this.jobAdvertisement = jobAdvertisement;
 	}
-	
-	
 }
