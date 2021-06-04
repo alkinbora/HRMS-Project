@@ -27,8 +27,7 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 	private CityDao cityDao;
 
 	@Autowired
-	public JobAdvertisementManager(JobAdvertisementDao jobAdvertisementDao,
-			EmployerDao employerDao, CityDao cityDao) {
+	public JobAdvertisementManager(JobAdvertisementDao jobAdvertisementDao, EmployerDao employerDao, CityDao cityDao) {
 		
 		super();
 		this.jobAdvertisementDao = jobAdvertisementDao;
@@ -50,7 +49,7 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 		}
 		
 		this.jobAdvertisementDao.save(jobAdvertisement);
-		return new SuccessResult("Eklendi.");
+		return new SuccessResult("İş ilanı başarıyla eklendi.");
 	}
 
 	@Override
@@ -70,14 +69,13 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 	@Override
 	public DataResult<List<JobAdvertisement>> findAllByIsActive() {
 		
-		return new SuccessDataResult<List<JobAdvertisement>>
-		(this.jobAdvertisementDao.findAllByIsActive(true),"Başarılı");
+		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findAllByIsActive(true),"Aktif iş ilanları başarıyla listelendi.");
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> findAllByIsActiveSorted() {
 		
-		Sort sort = Sort.by(Sort.Direction.ASC,"applicationDeadline"); // yükselen ASC , Alçalan DESC
+		Sort sort = Sort.by(Sort.Direction.ASC,"applicationDeadline"); 
 		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findAll(sort));
 	}
 
@@ -88,8 +86,7 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 			return new ErrorDataResult("İş veren bulunamadı.");
 		}
 		else {
-			return new SuccessDataResult <List<JobAdvertisement>>
-			(this.jobAdvertisementDao.getEmployersActiveJobAdvertisement(id),"Başarılı.");
+			return new SuccessDataResult <List<JobAdvertisement>>(this.jobAdvertisementDao.getEmployersActiveJobAdvertisement(id),"İş veren ve aktif iş ilanları başarıyla listelendi.");
 		}
 	}
 
@@ -101,14 +98,13 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 		}
 		JobAdvertisement ref =  this.jobAdvertisementDao.getOne(id);
 		ref.setActive(false);
-		return new SuccessDataResult <JobAdvertisement>(this.jobAdvertisementDao.save(ref),"İş ilanı Pasif.");
+		return new SuccessDataResult <JobAdvertisement>(this.jobAdvertisementDao.save(ref),"İş ilanı pasif hale getirildi.");
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> getAll() {
 		
-		return new SuccessDataResult<List<JobAdvertisement>>
-		(jobAdvertisementDao.findAll(),"Data listelendi.");
+		return new SuccessDataResult<List<JobAdvertisement>>(jobAdvertisementDao.findAll(),"Bütü iş ilanları başarıyla listelendi");
 	}
 	
 	private Result findEmployer(JobAdvertisement jobAdvertisement) {

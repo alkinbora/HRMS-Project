@@ -31,8 +31,7 @@ public class EmployerManager implements EmployerService{
 	private VerificationCodeService verificationCodeService;
 	private UserService userService;
 	
-	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService,
-			UserService userService) {
+	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService, UserService userService) {
 		super();
 		this.employerDao = employerDao;
 		this.verificationCodeService = verificationCodeService;
@@ -41,9 +40,7 @@ public class EmployerManager implements EmployerService{
 
 	@Override
 	public DataResult<Employer> add(Employer employer) {
-		Result engine = Injection.run(
-				companyNameChecker(employer),webSiteChecker(employer),passwordNullChecker(employer),
-				isRealEmployer(employer),isRealPhoneNumber(employer),isEmailAlreadyRegistered(employer));
+		Result engine = Injection.run(companyNameChecker(employer),webSiteChecker(employer),passwordNullChecker(employer),isRealEmployer(employer),isRealPhoneNumber(employer),isEmailAlreadyRegistered(employer));
 		
 		if(!engine.isSuccess()) {
 			return new ErrorDataResult(null,engine.getMessage());
@@ -51,27 +48,23 @@ public class EmployerManager implements EmployerService{
 		
 		User savedUser = this.userService.add(employer);
 		this.verificationCodeService.generateCode(new EmailVerificationCode(),savedUser.getId());
-		return new SuccessDataResult<Employer>(this.employerDao.save(employer),
-				"İş Veren Hesabı Eklendi, Doğrulama Kodu Gönderildi ID:"+employer.getId());
+		return new SuccessDataResult<Employer>(this.employerDao.save(employer),"İş Veren Hesabı Başarıyla Eklendi. Doğrulama kodu gönderildi."+employer.getId());
 	}
 
 	private Result isEmailAlreadyRegistered(Employer employer) {
 		if(employerDao.findAllByEmail(employer.getEmail()).stream().count() != 0) {
-			 return new ErrorResult("Email zaten kayıtlı"); 
+			 return new ErrorResult("Bu e-mail hesabı zaten kayıtlıdır."); 
 		}
 	 	return new SuccessResult();
 	}
 
 	private Result isRealPhoneNumber(Employer employer) {
 		String patterns 
-	      = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" 
-	      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" 
-	      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
-		
+	      = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
 		Pattern pattern = Pattern.compile(patterns);
 		Matcher matcher = pattern.matcher(employer.getPhoneNumber());
 		if(!matcher.matches()) {
-			 return new ErrorResult("Geçersiz Telefon Numarası"); 
+			 return new ErrorResult("Girdiğiniz telefon numarası geçersizdir."); 
 		}
 		return new SuccessResult();
 	}
@@ -81,10 +74,10 @@ public class EmployerManager implements EmployerService{
 	     Pattern pattern = Pattern.compile(regex);
 	     Matcher matcher = pattern.matcher(employer.getEmail());
 	     if(!matcher.matches()) {
-	    	 return new ErrorResult("Geçersiz Email Adresi");
+	    	 return new ErrorResult("Girdiğiniz e-mmail adresi geçersizdir.");
 	     }
 	     else if(!employer.getEmail().contains(employer.getWebAdress())) {
-	    	 return new ErrorResult("Domain adresi girmek zorundasınız"); 
+	    	 return new ErrorResult("Domain adresi girmek zorunludur!"); 
 	     }
 	 	return new SuccessResult();
 	     
@@ -92,21 +85,21 @@ public class EmployerManager implements EmployerService{
 
 	private Result passwordNullChecker(Employer employer) {
 		if(employer.getPassword().isBlank() || employer.getPassword() == null) {
-			 return new ErrorResult("Şifre Bilgisi Doldurulmak zorundadır"); 
+			 return new ErrorResult("Şifre alanı boş bırakılamaz! Lütfen şifrenizi belirleyiniz."); 
 		}
 		return new SuccessResult();
 	}
 
 	private Result webSiteChecker(Employer employer) {
 		if(employer.getWebAdress().isBlank() || employer.getWebAdress() == null) {
-			return new ErrorResult("WebSite Adresi Doldurulmak Zorundadır");
+			return new ErrorResult("Şirketin resmi web sitesi adresini vermek zorunludur. Lütfen site adresinizi giriniz.");
 		}
 		return new SuccessResult();
 	}
 
 	private Result companyNameChecker(Employer employer) {
 		if(employer.getCompanyName().isBlank() || employer.getCompanyName() == null) {
-			return new ErrorResult("Şirket Adı Doldurulmak Zorundadır");
+			return new ErrorResult("Şirket Adı vermek zorunludur. Lütfen adınızı giriniz.");
 		}
 		return new SuccessResult();
 	}
@@ -114,7 +107,7 @@ public class EmployerManager implements EmployerService{
 	@Override
 	public DataResult<List<Employer>> getAll() {
 		return new SuccessDataResult<List<Employer>>
-		(this.employerDao.findAll(),"Employer listelendi.");
+		(this.employerDao.findAll(),"İş Verenler Başarıyla Listelendi.");
 	}
 
 }

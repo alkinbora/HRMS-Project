@@ -33,8 +33,7 @@ public class CandidateManager implements CandidateService{
 	private UserService userService;
 	
 	@Autowired
-	public CandidateManager(CandidateDao candidateDao, VerificationCodeService verificationCodeService,
-			UserService userService) {
+	public CandidateManager(CandidateDao candidateDao, VerificationCodeService verificationCodeService, UserService userService) {
 		super();
 		this.candidateDao = candidateDao;
 		this.verificationCodeService = verificationCodeService;
@@ -45,8 +44,7 @@ public class CandidateManager implements CandidateService{
 	@Override
 	public DataResult<List<Candidate>> getAll() {
 		
-		return new SuccessDataResult<List<Candidate>>
-		(this.candidateDao.findAll(),FeedBack.listedCandidates);
+		return new SuccessDataResult<List<Candidate>>(this.candidateDao.findAll(),FeedBack.listedCandidates);
 	
 	}
 
@@ -54,8 +52,7 @@ public class CandidateManager implements CandidateService{
 	@Override
 	public DataResult<Candidate> add(Candidate candidate) {
 		
-		Result engine = Injection.run(firstNameChecker(candidate),lastNameChecker(candidate),
-				IdentityValidation.isRealPerson(candidate.getIdentificationNumber()),
+		Result engine = Injection.run(firstNameChecker(candidate),lastNameChecker(candidate), IdentityValidation.isRealPerson(candidate.getIdentificationNumber()),
 				IdChecker(candidate),
 				birthDateChecker(candidate),
 				emailNullChecker(candidate),
@@ -69,8 +66,7 @@ public class CandidateManager implements CandidateService{
 		
 		User savedUser = this.userService.add(candidate);
 		this.verificationCodeService.generateCode(new EmailVerificationCode(),savedUser.getId());
-		return new SuccessDataResult<Candidate>
-		(this.candidateDao.save(candidate),FeedBack.isRegisterSuccessForCandidateMessage);
+		return new SuccessDataResult<Candidate>(this.candidateDao.save(candidate),FeedBack.isRegisterSuccessForCandidateMessage);
 		
 		
 	}
@@ -138,8 +134,7 @@ public class CandidateManager implements CandidateService{
 	}
 	
 	private Result isIdRegistered(Candidate candidate) {
-		if(candidateDao.findAllByIdentificationNumber
-				(candidate.getIdentificationNumber()).stream().count() != 0 ) {
+		if(candidateDao.findAllByIdentificationNumber(candidate.getIdentificationNumber()).stream().count() != 0 ) {
 			return new ErrorResult(FeedBack.alreadyRegisteredId);
 		}
 		 return new SuccessResult();

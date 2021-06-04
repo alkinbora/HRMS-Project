@@ -1,15 +1,15 @@
 package kodlamaio.hrms.core.constants;
 
 public class FeedBack {
-	public static final String requiredFirstName = "Ad Bilgisi Doldurulmak Zorundadır";
-	public static final String isRegisterSuccessForCandidateMessage = "İş Arayan Hesabı Eklendi , Doğrulama Kodu Gönderildi:";
-	public static final String requiredLastName = "SoyAd Bilgisi Doldurulmak Zorundadır";
-	public static final String requiredBirthDate ="Doğum Tarihi Bilgisi Doldurulmak Zorundadır";
-	public static final String requiredEmail = "Email Bilgisi Doldurulmak Zorundadır";
-	public static final String requiredPassword = "Şifre Doldurulmak Zorundadır";
-	public static final String isRealMail = "Email Adresi Uyumsuz";
-	public static final String requiredId = "TcNo Boş Bırakılamaz";
-	public static final String alreadyRegisteredMail = "Email zaten kayıtlı";
-	public static final String alreadyRegisteredId = "TcNo zaten kayıtlı";
-	public static final String listedCandidates = "Başarılı Şekilde İş Arayanlar Listelendi";
+	public static final String requiredFirstName = "Ad bilgisi vermek zorunludur. Lütfen adınızı giriniz.";
+	public static final String isRegisterSuccessForCandidateMessage = "İş arayan hesabı başarıyla oluşturuldu. Doğrulama kodu başarıyla gönderildi.";
+	public static final String requiredLastName = "Soyad bilgisi vermek zorunludur. Lütfen soyadınızı giriniz.";
+	public static final String requiredBirthDate ="Doğum tarihi bilgisi vermek zorunludur. Lütfen doğum tarihinizi giriniz.";
+	public static final String requiredEmail = "Email bilgisi vermek zorunludur. Lütfen gerçek/geçerli e-mail adresinizi giriniz.";
+	public static final String requiredPassword = "Şifre alanı boş bırakılamaz! Lütfen şifrenizi belirleyiniz.";
+	public static final String isRealMail = "Email adresi geçersizdir. Lütfen bilgileri kontrol ediniz.";
+	public static final String requiredId = "Tc No bilgisi vermek zorunludur. Lütfen tc no giriniz.";
+	public static final String alreadyRegisteredMail = "Bu e-mail adresi zaten kayırlıdır.";
+	public static final String alreadyRegisteredId = "Bu tc no zaten kayıtlıdır.";
+	public static final String listedCandidates = "İş Arayanlar Başarılı Bir Şekilde Listelendi.";
 }

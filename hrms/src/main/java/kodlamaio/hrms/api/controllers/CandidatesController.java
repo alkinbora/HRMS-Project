@@ -29,8 +29,6 @@ public class CandidatesController {
 		return this.candidateService.getAll();
 	}
 	
-	//Requestbody istek yapıp datayı önizler.
-	
 	@PostMapping("/add")
 	public DataResult<Candidate> add(@RequestBody Candidate candidate){
 		return this.candidateService.add(candidate);

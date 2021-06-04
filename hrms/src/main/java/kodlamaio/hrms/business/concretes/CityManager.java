@@ -33,24 +33,21 @@ public class CityManager implements CityService{
 		
 		if(!inject.isSuccess()) {
 			
-			return new ErrorDataResult<City>
-					(null,inject.getMessage());
+			return new ErrorDataResult<City>(null,inject.getMessage());
 		}
-		return new SuccessDataResult<City>
-		(this.cityDao.save(city),"Başarılı şekilde eklendi.");
+		return new SuccessDataResult<City>(this.cityDao.save(city),"Şehir sisteme başarıyla eklendi.");
 	}
 
 	private Result cityNameChecker(City city) {
 		if(city.getCityName().isEmpty() || city.getCityName().isBlank()) {
-			return new ErrorResult("Şehir alanı zorunlu.");
+			return new ErrorResult("Şehir bilgisi vermek zorunludur. Lütfen şehir tercihinizi giriniz.");
 		}
 		return new SuccessResult();
 	}
 
 	@Override
 	public DataResult<List<City>> getAll() {
-		return new SuccessDataResult<List<City>>
-		(this.cityDao.findAll(),"Şehirler listelendi.");
+		return new SuccessDataResult<List<City>>(this.cityDao.findAll(),"Bütün şehirler listelendi.");
 	}
 
 }

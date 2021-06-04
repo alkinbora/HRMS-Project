@@ -46,15 +46,12 @@ public class VerificationCodeManager implements VerificationCodeService{
 		EmailVerificationCode ref = emailVerificationDao.findByUserId(id).stream().findFirst().get();
 		if(ref.getCode().equals(verificationCode) && ref.isVerified() != true) {
 			ref.setVerified(true);
-			return  new SuccessDataResult<EmailVerificationCode>
-			(this.emailVerificationDao.save(ref),"Başarılı");
+			return  new SuccessDataResult<EmailVerificationCode>(this.emailVerificationDao.save(ref),"Hesabınız başarılı bir şekilde doğrulandı.");
 		}
 		else if(ref.isVerified() == true) {
-			return  new ErrorDataResult<EmailVerificationCode>
-			(null,"Zaten Doğrulanmış Hesap");
+			return  new ErrorDataResult<EmailVerificationCode>(null,"Hesabınız zaten doğrulanmıştır.");
 		}
-		return  new ErrorDataResult<EmailVerificationCode>
-		(null,"Doğrulama Kodu Geçersiz");
+		return  new ErrorDataResult<EmailVerificationCode>(null,"Girdiğiniz doğrulama kodu geçersizdir!");
 
 	}
 	
