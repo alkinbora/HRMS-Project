@@ -3,7 +3,7 @@ Human Resourse Management Software
 
 
 ## Database
-![DB](https://user-images.githubusercontent.com/81679513/120185944-823eee80-c21b-11eb-8072-503412f58411.png)
+![DB](https://user-images.githubusercontent.com/81679513/120933861-be36ef80-c704-11eb-964e-9b62685d327e.png)
 
 -------------------------------------------------
 
