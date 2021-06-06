@@ -20,21 +20,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="cities")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","jobAdvertisement"})
+@Table(name = "cities")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdvertisement" })
 
 public class City {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="city_name")
+
+	@Column(name = "city_name")
 	private String cityName;
-	
+
 	@OneToMany(mappedBy = "city")
-    private List<JobAdvertisement> jobAdvertisement;
+	private List<JobAdvertisement> jobAdvertisement;
 
 	public City() {
 		super();
@@ -70,5 +70,5 @@ public class City {
 	public void setJobAdvertisement(List<JobAdvertisement> jobAdvertisement) {
 		this.jobAdvertisement = jobAdvertisement;
 	}
-	
+
 }

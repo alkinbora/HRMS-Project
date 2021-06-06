@@ -12,11 +12,11 @@ import kodlamaio.hrms.dataAccess.abstracts.UserDao;
 import kodlamaio.hrms.entities.concretes.User;
 
 @Service
-public class UserManager implements UserService{
-	
+public class UserManager implements UserService {
+
 	private UserDao userDao;
-	
-	@Autowired 
+
+	@Autowired
 	public UserManager(UserDao userDao) {
 		super();
 		this.userDao = userDao;
@@ -31,5 +31,5 @@ public class UserManager implements UserService{
 	public User add(User user) {
 		return userDao.save(user);
 	}
-	
+
 }

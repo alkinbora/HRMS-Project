@@ -9,22 +9,22 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper=false) 
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
 @Table(name = "candidates")
 
-public class Candidate extends User{
-	
+public class Candidate extends User {
+
 	@Column(name = "first_name")
 	private String firstName;
-	
+
 	@Column(name = "last_name")
 	private String lastName;
-	
+
 	@Column(name = "identification_number")
 	private String identificationNumber;
-	
+
 	@Column(name = "birth_date")
 	private Date birthDate;
 
@@ -70,6 +70,6 @@ public class Candidate extends User{
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
-	}  
-	
+	}
+
 }

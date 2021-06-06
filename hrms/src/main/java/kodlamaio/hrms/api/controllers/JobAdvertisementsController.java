@@ -27,38 +27,38 @@ public class JobAdvertisementsController {
 	}
 
 	@GetMapping("/getall")
-	public DataResult<List<JobAdvertisement>>  getAll(){
-		
+	public DataResult<List<JobAdvertisement>> getAll() {
+
 		return this.jobAdvertisementService.getAll();
 	}
-	
+
 	@GetMapping("/getallactive")
-	public DataResult<List<JobAdvertisement>>  getAllActive(){
-		
+	public DataResult<List<JobAdvertisement>> getAllActive() {
+
 		return this.jobAdvertisementService.findAllByIsActive();
 	}
-	
+
 	@GetMapping("/getallactivesorted")
-	public DataResult<List<JobAdvertisement>>  getAllActiveSorted(){
-		
+	public DataResult<List<JobAdvertisement>> getAllActiveSorted() {
+
 		return this.jobAdvertisementService.findAllByIsActiveSorted();
 	}
-	
+
 	@GetMapping("/getEmployerJobAdvertisement")
 	public DataResult<List<JobAdvertisement>> findAllByIsActiveAndCompanyName(int id) {
-		
+
 		return this.jobAdvertisementService.findAllByIsActiveAndCompanyName(id);
 	}
-	
+
 	@PostMapping("/add")
-	public Result add(@RequestBody JobAdvertisement jobAdvertisement){
-		
+	public Result add(@RequestBody JobAdvertisement jobAdvertisement) {
+
 		return this.jobAdvertisementService.add(jobAdvertisement);
 	}
-	
+
 	@PostMapping("/jobAdvertisementDisable")
 	public DataResult<JobAdvertisement> setJobAdvertisementDisabled(int id) {
-		
+
 		return this.jobAdvertisementService.jobAdvertisementDisabled(id);
 	}
 }

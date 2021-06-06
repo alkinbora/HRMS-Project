@@ -16,19 +16,19 @@ import kodlamaio.hrms.entities.concretes.Employee;
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
-	
+
 	private EmployeeService employeeService;
 
 	public EmployeeController(EmployeeService employeeService) {
 		super();
 		this.employeeService = employeeService;
 	}
-	
+
 	@GetMapping("/getall")
-	public DataResult<List<Employee>> getAll(){
+	public DataResult<List<Employee>> getAll() {
 		return this.employeeService.getAll();
 	}
-	
+
 	@PostMapping("/register")
 	public Result add(@RequestBody Employee employee) {
 		return this.employeeService.register(employee);

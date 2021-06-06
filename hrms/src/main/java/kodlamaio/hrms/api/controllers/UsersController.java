@@ -16,8 +16,8 @@ import kodlamaio.hrms.entities.concretes.User;
 @RequestMapping("/api/users")
 public class UsersController {
 
-private UserService userService;
-	
+	private UserService userService;
+
 	@Autowired
 	public UsersController(UserService userService) {
 		super();
@@ -26,7 +26,7 @@ private UserService userService;
 
 	@GetMapping("/getall")
 	@ResponseBody
-	public DataResult<List<User>>  getAll(){
+	public DataResult<List<User>> getAll() {
 		return this.userService.getAll();
 	}
 }

@@ -14,24 +14,25 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper=false) 
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
 @Table(name = "employers")
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","jobAdvertisement"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "jobAdvertisement" })
 
-public class Employer extends User{
-	
-	@Column(name="company_name")
+public class Employer extends User {
+
+	@Column(name = "company_name")
 	private String companyName;
-	@Column(name="web_address")
+
+	@Column(name = "web_address")
 	private String webAdress;
-	
-	@Column(name="phone_number")
+
+	@Column(name = "phone_number")
 	private String phoneNumber;
-	
+
 	@OneToMany(mappedBy = "employer")
 	private List<JobAdvertisement> jobAdvertisement;
 

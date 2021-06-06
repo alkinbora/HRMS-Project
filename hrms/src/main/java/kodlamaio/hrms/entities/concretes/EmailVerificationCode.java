@@ -18,23 +18,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "verification_codes")
 
 public class EmailVerificationCode {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="code")
+
+	@Column(name = "code")
 	private String code;
-	
-	@Column(name="is_verified")
+
+	@Column(name = "is_verified")
 	private boolean isVerified;
-	
+
 	public boolean isVerified() {
 		return isVerified;
 	}
-	
-	@Column(name="user_id")
+
+	@Column(name = "user_id")
 	private int userId;
 
 	public EmailVerificationCode() {
@@ -76,6 +76,5 @@ public class EmailVerificationCode {
 	public void setVerified(boolean isVerified) {
 		this.isVerified = isVerified;
 	}
-	
-	
+
 }

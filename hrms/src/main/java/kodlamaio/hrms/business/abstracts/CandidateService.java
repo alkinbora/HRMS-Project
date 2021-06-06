@@ -6,10 +6,8 @@ import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.entities.concretes.Candidate;
 
 public interface CandidateService {
-	
-	//Result add(Candidate candidate);
-
 
 	DataResult<List<Candidate>> getAll();
+
 	DataResult<Candidate> add(Candidate candidate);
 }

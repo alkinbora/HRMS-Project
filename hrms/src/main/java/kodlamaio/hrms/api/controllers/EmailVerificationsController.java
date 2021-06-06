@@ -14,15 +14,15 @@ import kodlamaio.hrms.core.utilities.results.Result;
 public class EmailVerificationsController {
 
 	private VerificationCodeService verificationCodeService;
-	
+
 	@Autowired
 	public EmailVerificationsController(VerificationCodeService verificationCodeService) {
 		super();
 		this.verificationCodeService = verificationCodeService;
 	}
-	
+
 	@PostMapping("/update/{verificationCode}/{id}")
-	public Result setVerify(@RequestParam String verificationCode,@RequestParam Integer id) {
-		return verificationCodeService.verify(verificationCode,id);
-}
+	public Result setVerify(@RequestParam String verificationCode, @RequestParam Integer id) {
+		return verificationCodeService.verify(verificationCode, id);
+	}
 }

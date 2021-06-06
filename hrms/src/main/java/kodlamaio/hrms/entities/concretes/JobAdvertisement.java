@@ -18,47 +18,47 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="job_advertisements")
+@Table(name = "job_advertisements")
 @Entity
 public class JobAdvertisement {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="description")
+
+	@Column(name = "description")
 	private String description;
-	@Column(name="quota")
+
+	@Column(name = "quota")
 	private int quota;
-	
-	//appeal_expiration_date
-	@Column(name="appeal_expiration_date")
+
+	@Column(name = "appeal_expiration_date")
 	private LocalDateTime appealExpirationDate;
-	
-	@Column(name="created_date")
+
+	@Column(name = "created_date")
 	private LocalDateTime createdDate;
-	
-	@Column(name="min_salary")
+
+	@Column(name = "min_salary")
 	private Double minSalary;
-	
-	@Column(name="max_salary")
+
+	@Column(name = "max_salary")
 	private Double maxSalary;
-	
-	@Column(name="is_active")
+
+	@Column(name = "is_active")
 	private boolean isActive;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "city_id")
 	private City city;
-	 
+
 	@ManyToOne
 	@JoinColumn(name = "job_title_id")
-     private JobTitle jobtitle;
-	 
-	 @ManyToOne
-	 @JoinColumn(name = "employer_id")
-	 private Employer employer;
+	private JobTitle jobtitle;
+
+	@ManyToOne
+	@JoinColumn(name = "employer_id")
+	private Employer employer;
 
 	public JobAdvertisement() {
 		super();
@@ -168,5 +168,5 @@ public class JobAdvertisement {
 	public void setEmployer(Employer employer) {
 		this.employer = employer;
 	}
-	
+
 }

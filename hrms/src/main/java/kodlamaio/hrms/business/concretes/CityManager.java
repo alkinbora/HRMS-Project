@@ -17,29 +17,29 @@ import kodlamaio.hrms.dataAccess.abstracts.CityDao;
 import kodlamaio.hrms.entities.concretes.City;
 
 @Service
-public class CityManager implements CityService{
+public class CityManager implements CityService {
 
 	private CityDao cityDao;
-	
+
 	@Autowired
 	public CityManager(CityDao cityDao) {
 		super();
 		this.cityDao = cityDao;
 	}
-	
+
 	@Override
 	public DataResult<City> add(City city) {
 		Result inject = Injection.run(cityNameChecker(city));
-		
-		if(!inject.isSuccess()) {
-			
-			return new ErrorDataResult<City>(null,inject.getMessage());
+
+		if (!inject.isSuccess()) {
+
+			return new ErrorDataResult<City>(null, inject.getMessage());
 		}
-		return new SuccessDataResult<City>(this.cityDao.save(city),"Şehir sisteme başarıyla eklendi.");
+		return new SuccessDataResult<City>(this.cityDao.save(city), "Şehir sisteme başarıyla eklendi.");
 	}
 
 	private Result cityNameChecker(City city) {
-		if(city.getCityName().isEmpty() || city.getCityName().isBlank()) {
+		if (city.getCityName().isEmpty() || city.getCityName().isBlank()) {
 			return new ErrorResult("Şehir bilgisi vermek zorunludur. Lütfen şehir tercihinizi giriniz.");
 		}
 		return new SuccessResult();
@@ -47,7 +47,7 @@ public class CityManager implements CityService{
 
 	@Override
 	public DataResult<List<City>> getAll() {
-		return new SuccessDataResult<List<City>>(this.cityDao.findAll(),"Bütün şehirler listelendi.");
+		return new SuccessDataResult<List<City>>(this.cityDao.findAll(), "Bütün şehirler listelendi.");
 	}
 
 }

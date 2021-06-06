@@ -14,10 +14,10 @@ import kodlamaio.hrms.dataAccess.abstracts.EmployeeDao;
 import kodlamaio.hrms.entities.concretes.Employee;
 
 @Service
-public class EmployeeManager implements EmployeeService{
+public class EmployeeManager implements EmployeeService {
 
 	private EmployeeDao employeeDao;
-	
+
 	@Autowired
 	public EmployeeManager(EmployeeDao employeeDao) {
 		super();
@@ -26,7 +26,7 @@ public class EmployeeManager implements EmployeeService{
 
 	@Override
 	public DataResult<List<Employee>> getAll() {
-		return new SuccessDataResult<List<Employee>>(this.employeeDao.findAll(),"Bütün çalışanlar Listelendi");
+		return new SuccessDataResult<List<Employee>>(this.employeeDao.findAll(), "Bütün çalışanlar Listelendi");
 	}
 
 	@Override

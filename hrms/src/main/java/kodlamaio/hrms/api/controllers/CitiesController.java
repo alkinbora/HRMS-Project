@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CitiesController {
-	
+
 	@Autowired
 	private CityService cityService;
-	
+
 	@GetMapping("/getall")
-	public DataResult<List<City>> getAll(){
+	public DataResult<List<City>> getAll() {
 		return this.cityService.getAll();
 	}
 
 	@PostMapping("/add")
-	public DataResult<City> add(City city){
+	public DataResult<City> add(City city) {
 		return this.cityService.add(city);
 	}
-	
+
 }

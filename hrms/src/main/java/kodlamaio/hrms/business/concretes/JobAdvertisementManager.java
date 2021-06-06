@@ -83,7 +83,7 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 	public DataResult<List<JobAdvertisement>> findAllByIsActiveAndCompanyName(int id) {
 		
 		if(!this.employerDao.existsById(id)) {
-			return new ErrorDataResult("İş veren bulunamadı.");
+			return new ErrorDataResult<List<JobAdvertisement>>("İş veren bulunamadı.");
 		}
 		else {
 			return new SuccessDataResult <List<JobAdvertisement>>(this.jobAdvertisementDao.getEmployersActiveJobAdvertisement(id),"İş veren ve aktif iş ilanları başarıyla listelendi.");
@@ -94,7 +94,7 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 	public DataResult<JobAdvertisement> jobAdvertisementDisabled(int id) {
 		
 		if(!this.jobAdvertisementDao.existsById(id)) {
-			return new ErrorDataResult("İş veren bulunamadı.");
+			return new ErrorDataResult<JobAdvertisement>("İş veren bulunamadı.");
 		}
 		JobAdvertisement ref =  this.jobAdvertisementDao.getOne(id);
 		ref.setActive(false);

@@ -21,16 +21,16 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	
-	@Column(name="email_address")
+
+	@Column(name = "email_address")
 	private String email;
-	
-	@Column(name="password")
+
+	@Column(name = "password")
 	private String password;
 
 	public User() {
@@ -67,6 +67,5 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
 }

@@ -7,5 +7,6 @@ import kodlamaio.hrms.entities.concretes.City;
 
 public interface CityService {
 	DataResult<City> add(City city);
+
 	DataResult<List<City>> getAll();
 }
