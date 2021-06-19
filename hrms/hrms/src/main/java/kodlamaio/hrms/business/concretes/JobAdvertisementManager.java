@@ -3,10 +3,12 @@ package kodlamaio.hrms.business.concretes;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import kodlamaio.hrms.business.abstracts.JobAdvertisementService;
+import kodlamaio.hrms.core.utilities.dtoTransfer.DtoService;
 import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.core.utilities.results.ErrorDataResult;
 import kodlamaio.hrms.core.utilities.results.ErrorResult;
@@ -18,166 +20,179 @@ import kodlamaio.hrms.dataAccess.abstracts.CityDao;
 import kodlamaio.hrms.dataAccess.abstracts.EmployerDao;
 import kodlamaio.hrms.dataAccess.abstracts.JobAdvertisementDao;
 import kodlamaio.hrms.entities.concretes.JobAdvertisement;
+import kodlamaio.hrms.entities.dtos.JobAdvertisementDto;
 
 @Service
-public class JobAdvertisementManager implements JobAdvertisementService{
-	
+public class JobAdvertisementManager implements JobAdvertisementService {
+
 	private JobAdvertisementDao jobAdvertisementDao;
 	private EmployerDao employerDao;
 	private CityDao cityDao;
 
+	@Qualifier("dtoService")
+	private DtoService dtoService;
+
 	@Autowired
-	public JobAdvertisementManager(JobAdvertisementDao jobAdvertisementDao, EmployerDao employerDao, CityDao cityDao) {
-		
+	public JobAdvertisementManager(JobAdvertisementDao jobAdvertisementDao, EmployerDao employerDao, CityDao cityDao,
+			DtoService dtoSerivce) {
+
 		super();
 		this.jobAdvertisementDao = jobAdvertisementDao;
 		this.employerDao = employerDao;
 		this.cityDao = cityDao;
+		this.dtoService = dtoSerivce;
 	}
-	
+
 	@Override
-	public Result add(JobAdvertisement jobAdvertisement) {
-		Result inject = Injection.run(
-				findEmployer(jobAdvertisement),findCity(jobAdvertisement),descriptionNullChecker(jobAdvertisement),
-				ifMinSalaryNull(jobAdvertisement),ifMaxSalaryNull(jobAdvertisement),minSalaryChecker(jobAdvertisement),
-				maxSalaryChecker(jobAdvertisement),ifMinSalaryEqualsMaxSalary(jobAdvertisement),ifQuotaSmallerThanOne(jobAdvertisement),
-				appealExpirationChecker( jobAdvertisement));
-		
-		if(!inject.isSuccess()) {
-			
+	public Result add(JobAdvertisementDto jobAdvertisement) {
+		Result inject = Injection.run(findEmployer(jobAdvertisement), findCity(jobAdvertisement),
+				descriptionNullChecker(jobAdvertisement), ifMinSalaryNull(jobAdvertisement),
+				ifMaxSalaryNull(jobAdvertisement), minSalaryChecker(jobAdvertisement),
+				maxSalaryChecker(jobAdvertisement), ifMinSalaryEqualsMaxSalary(jobAdvertisement),
+				ifQuotaSmallerThanOne(jobAdvertisement), appealExpirationChecker(jobAdvertisement));
+
+		if (!inject.isSuccess()) {
+
 			return new ErrorResult(inject.getMessage());
 		}
-		
-		this.jobAdvertisementDao.save(jobAdvertisement);
+
+		this.jobAdvertisementDao.save((JobAdvertisement) dtoService.dtoClassConverter(jobAdvertisement, JobAdvertisement.class));
 		return new SuccessResult("İş ilanı başarıyla eklendi.");
 	}
 
 	@Override
 	public Result update(JobAdvertisement jobAdvertisement) {
-		
+
 		this.jobAdvertisementDao.save(jobAdvertisement);
 		return new SuccessResult("İş ilanı güncellendi.");
 	}
 
 	@Override
 	public Result delete(JobAdvertisement jobAdvertisement) {
-		
+
 		this.jobAdvertisementDao.delete(jobAdvertisement);
 		return new SuccessResult("İş ilanı silindi.");
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> findAllByIsActive() {
-		
-		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findAllByIsActive(true),"Aktif iş ilanları başarıyla listelendi.");
+
+		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findAllByIsActive(true),
+				"Aktif iş ilanları başarıyla listelendi.");
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> findAllByIsActiveSorted() {
-		
-		Sort sort = Sort.by(Sort.Direction.ASC,"applicationDeadline"); 
+
+		Sort sort = Sort.by(Sort.Direction.ASC, "applicationDeadline");
 		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findAll(sort));
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> findAllByIsActiveAndCompanyName(int id) {
-		
-		if(!this.employerDao.existsById(id)) {
+
+		if (!this.employerDao.existsById(id)) {
 			return new ErrorDataResult<List<JobAdvertisement>>("İş veren bulunamadı.");
-		}
-		else {
-			return new SuccessDataResult <List<JobAdvertisement>>(this.jobAdvertisementDao.getEmployersActiveJobAdvertisement(id),"İş veren ve aktif iş ilanları başarıyla listelendi.");
+		} else {
+			return new SuccessDataResult<List<JobAdvertisement>>(
+					this.jobAdvertisementDao.getEmployersActiveJobAdvertisement(id),
+					"İş veren ve aktif iş ilanları başarıyla listelendi.");
 		}
 	}
 
 	@Override
 	public DataResult<JobAdvertisement> jobAdvertisementDisabled(int id) {
-		
-		if(!this.jobAdvertisementDao.existsById(id)) {
+
+		if (!this.jobAdvertisementDao.existsById(id)) {
 			return new ErrorDataResult<JobAdvertisement>("İş veren bulunamadı.");
 		}
-		JobAdvertisement ref =  this.jobAdvertisementDao.getOne(id);
+		JobAdvertisement ref = this.jobAdvertisementDao.getOne(id);
 		ref.setActive(false);
-		return new SuccessDataResult <JobAdvertisement>(this.jobAdvertisementDao.save(ref),"İş ilanı pasif hale getirildi.");
+		return new SuccessDataResult<JobAdvertisement>(this.jobAdvertisementDao.save(ref),
+				"İş ilanı pasif hale getirildi.");
 	}
 
 	@Override
 	public DataResult<List<JobAdvertisement>> getAll() {
-		
-		return new SuccessDataResult<List<JobAdvertisement>>(jobAdvertisementDao.findAll(),"Bütü iş ilanları başarıyla listelendi");
+
+		return new SuccessDataResult<List<JobAdvertisement>>(jobAdvertisementDao.findAll(),
+				"Bütü iş ilanları başarıyla listelendi");
 	}
-	
-	private Result findEmployer(JobAdvertisement jobAdvertisement) {
-		if(!this.employerDao.existsById(jobAdvertisement.getEmployer().getId())) {
+
+	private Result findEmployer(JobAdvertisementDto jobAdvertisement) {
+		if(!this.employerDao.existsById(jobAdvertisement.getEmployerId())) {
 			return new ErrorResult("İş veren bulunamadı.");
 		}
 		return new SuccessResult();
 	}
-	
-	
-	private Result findCity(JobAdvertisement jobAdvertisement) {
-		if(!this.cityDao.existsById(jobAdvertisement.getCity().getId())) {
+
+	private Result findCity(JobAdvertisementDto jobAdvertisement) {
+		if(!this.cityDao.existsById(jobAdvertisement.getCityId())) {
 			return new ErrorResult("Şehir bulunamadı.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result descriptionNullChecker(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getDescription().isEmpty()) {
+
+	private Result descriptionNullChecker(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getDescription().isEmpty()) {
 			return new ErrorResult("İş tanımı boş bırakılamaz.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result ifMinSalaryNull(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getMinSalary() == null) {
+
+	private Result ifMinSalaryNull(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getMinSalary() == null) {
 			return new ErrorResult("Minimum maaş girilmek zorundadır.");
 		}
 		return new SuccessResult();
 	}
-	
-	
-	private Result ifMaxSalaryNull(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getMaxSalary() == null) {
+
+	private Result ifMaxSalaryNull(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getMaxSalary() == null) {
 			return new ErrorResult("Maksimum maaş girilmek zorundadır.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result minSalaryChecker(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getMinSalary() == 0) {
+
+	private Result minSalaryChecker(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getMinSalary() == 0) {
 			return new ErrorResult("Minimum maaş 0 verilemez.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result maxSalaryChecker(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getMaxSalary() == 0) {
+
+	private Result maxSalaryChecker(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getMaxSalary() == 0) {
 			return new ErrorResult("Maksimum maaş 0 verilemez.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result ifMinSalaryEqualsMaxSalary(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getMinSalary() >= jobAdvertisement.getMaxSalary()) {
+
+	private Result ifMinSalaryEqualsMaxSalary(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getMinSalary() >= jobAdvertisement.getMaxSalary()) {
 			return new ErrorResult("Minimum maaş, maksimum maaşa eşit olamaz.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result ifQuotaSmallerThanOne(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getQuota() < 1) {
+
+	private Result ifQuotaSmallerThanOne(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getQuota() < 1) {
 			return new ErrorResult("Açık pozisyon sayısı 1 den küçük olamaz.");
 		}
 		return new SuccessResult();
 	}
-	
-	private Result appealExpirationChecker(JobAdvertisement jobAdvertisement) {
-		if(jobAdvertisement.getAppealExpirationDate() == null) {
+
+	private Result appealExpirationChecker(JobAdvertisementDto jobAdvertisement) {
+		if (jobAdvertisement.getAppealExpirationDate() == null) {
 			return new ErrorResult("Son başvuru tarihi girilmek zorundadır");
 		}
 		return new SuccessResult();
 	}
-	
-	
+
+	@Override
+	public DataResult<List<JobAdvertisement>> getOneJobAds(int id) {
+		return  new SuccessDataResult<List<JobAdvertisement>>
+		(this.jobAdvertisementDao.getOneById(id),"İş ilanı detay sayfası başarıyla geldi.");
+	}
+
 }

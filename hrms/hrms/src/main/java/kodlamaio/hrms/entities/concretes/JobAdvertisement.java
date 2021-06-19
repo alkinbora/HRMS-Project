@@ -15,11 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "job_advertisements")
-@Entity
+
 public class JobAdvertisement {
 
 	@Id
@@ -60,13 +61,21 @@ public class JobAdvertisement {
 	@JoinColumn(name = "employer_id")
 	private Employer employer;
 
+	@ManyToOne
+	@JoinColumn(name = "work_hours_id")
+	private WorkHour workHour;
+
+	@ManyToOne
+	@JoinColumn(name = "work_types_id")
+	private WorkType workType;
+
 	public JobAdvertisement() {
 		super();
 	}
 
 	public JobAdvertisement(int id, String description, int quota, LocalDateTime appealExpirationDate,
 			LocalDateTime createdDate, Double minSalary, Double maxSalary, boolean isActive, City city,
-			JobTitle jobtitle, Employer employer) {
+			JobTitle jobtitle, Employer employer, WorkHour workHour, WorkType workType) {
 		super();
 		this.id = id;
 		this.description = description;
@@ -79,6 +88,8 @@ public class JobAdvertisement {
 		this.city = city;
 		this.jobtitle = jobtitle;
 		this.employer = employer;
+		this.workHour = workHour;
+		this.workType = workType;
 	}
 
 	public int getId() {
@@ -167,6 +178,22 @@ public class JobAdvertisement {
 
 	public void setEmployer(Employer employer) {
 		this.employer = employer;
+	}
+
+	public WorkHour getWorkHour() {
+		return workHour;
+	}
+
+	public void setWorkHour(WorkHour workHour) {
+		this.workHour = workHour;
+	}
+
+	public WorkType getWorkType() {
+		return workType;
+	}
+
+	public void setWorkType(WorkType workType) {
+		this.workType = workType;
 	}
 
 }

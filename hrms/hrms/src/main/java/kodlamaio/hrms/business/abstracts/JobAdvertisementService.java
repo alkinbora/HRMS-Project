@@ -5,22 +5,25 @@ import java.util.List;
 import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concretes.JobAdvertisement;
+import kodlamaio.hrms.entities.dtos.JobAdvertisementDto;
 
 public interface JobAdvertisementService {
 
-	Result add(JobAdvertisement jobAdvertisement);
-
+	Result add(JobAdvertisementDto jobAdvertisement);
+	
 	Result update(JobAdvertisement jobAdvertisement);
-
+	
 	Result delete(JobAdvertisement jobAdvertisement);
-
+	
 	DataResult<List<JobAdvertisement>> getAll();
-
+	
 	DataResult<List<JobAdvertisement>> findAllByIsActive();
-
+	
 	DataResult<List<JobAdvertisement>> findAllByIsActiveSorted();
-
+	
 	DataResult<List<JobAdvertisement>> findAllByIsActiveAndCompanyName(int id);
-
+	
 	DataResult<JobAdvertisement> jobAdvertisementDisabled(int id);
+	
+	DataResult<List<JobAdvertisement>> getOneJobAds(int id);
 }
